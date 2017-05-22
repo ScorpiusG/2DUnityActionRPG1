@@ -16,16 +16,20 @@ public class Game_InterfaceControl : MonoBehaviour
         if (!Debug.isDebugBuild) Destroy(textDebug.gameObject);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(Debug.isDebugBuild)
         {
             textDebug.text =
                 "HEALTH = " + GameData.data.playerHealth.ToString() + "\n" +
                 "WPN MELEE CURRENT = " + GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].stringName + " (ID " + GameData.data.playerWeaponMeleeCurrent.ToString() + ")\n" +
-                "WPN MELEE INVENTORY = " + GameData.data.playerWeaponMeleeList.ToString() + "\n" +
-                "WPN RANGE CURRENT = " + GameInfo.info.itemListWeaponRange.listItemData[GameData.data.playerWeaponRangeCurrent].stringName + " (ID " + GameData.data.playerWeaponRangeCurrent.ToString() + ")\n" +
-                "WPN RANGE INVENTORY = " + GameData.data.playerWeaponRangeList.ToString() + "\n";
+                "WPN RANGE CURRENT = " + GameInfo.info.itemListWeaponRange.listItemData[GameData.data.playerWeaponRangeCurrent].stringName + " (ID " + GameData.data.playerWeaponRangeCurrent.ToString() + ")\n\n";
+
+            if (Game_GameControl.control.objectPlayerTarget != null)
+            {
+                textDebug.text += "TARGET NAME = " + Game_GameControl.control.objectPlayerTarget.targetName + "\n" +
+                    "TARGET HITPOINTS = " + Game_GameControl.control.objectPlayerTarget.hitpointCurrent + " / " + Game_GameControl.control.objectPlayerTarget.hitpointMaximum + "\n\n";
+            }
         }
     }
 }

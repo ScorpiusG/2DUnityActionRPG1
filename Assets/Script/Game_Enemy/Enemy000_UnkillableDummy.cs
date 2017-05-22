@@ -6,6 +6,7 @@ public class Enemy000_UnkillableDummy : Game_EnemyCore
 {
     private void Start()
     {
+        Initialize();
         StartCoroutine("Routine");
     }
 

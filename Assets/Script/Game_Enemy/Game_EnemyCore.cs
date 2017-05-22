@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Game_EnemyCore : MonoBehaviour
 {
+    public string targetName = "";
+
     public int hitpointInitial = -1;
     public int hitpointMaximum = 1000;
     [HideInInspector] public int hitpointCurrent = 0;
 
     public bool knockbackOnDamageEnable = true;
 
-    void Awake()
+    public void Initialize()
     {
-        if (hitpointInitial >= 0) hitpointCurrent = hitpointMaximum;
+        if (hitpointInitial <= 0) hitpointCurrent = hitpointMaximum;
         else hitpointCurrent = hitpointInitial;
     }
 
