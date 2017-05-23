@@ -5,7 +5,7 @@ using System.Collections;
 public class Game_Projectile : MonoBehaviour
 {
     public float movementSpeed = 2f;
-    public Vector2 boundaryDespawn = new Vector2(9.5f, 10f);
+    public Vector2 boundaryDespawn = new Vector2(10f, 10f);
 
     public string animatorLoopClipName = "loop";
     Animator anim;
@@ -29,7 +29,7 @@ public class Game_Projectile : MonoBehaviour
     {
         if (anim == null) anim = GetComponent<Animator>();
 
-        anim.Play(animatorLoopClipName);
+        if (animatorLoopClipName != "") anim.Play(animatorLoopClipName);
     }
 
     void Start() { Initialize(); }

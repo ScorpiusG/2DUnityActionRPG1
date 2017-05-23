@@ -9,6 +9,7 @@ public class Game_GameControl : MonoBehaviour
         Static,
         FollowPlayer,
         FollowTarget,
+        FollowBetweenPlayerAndTarget,
         MoveToPoint
     }
 
@@ -23,7 +24,9 @@ public class Game_GameControl : MonoBehaviour
     public GameObject objectPlayer;
 
     public Game_EnemyCore objectPlayerTarget = null;
-    public Game_EnemyCore[] objectEnemyList;
+    public GameObject objectPlayerTargetReticle;
+    public Animator animatorPlayerTargetReticle;
+    private Game_EnemyCore[] objectEnemyList;
     public float floatPlayerTargetRange = 3f;
     public int intTargetUpdateDelayFrames = 3;
     private int intTargetUpdateDelayFramesCurrent = 0;
@@ -75,7 +78,11 @@ public class Game_GameControl : MonoBehaviour
                     {
                         // If there was no target before, set this one as the target.
                         objectPlayerTarget = x;
-                        // TODO: Animate target reticle begin animation
+                        // Animate target reticle begin animation
+                        if (animatorPlayerTargetReticle != null)
+                        {
+                            animatorPlayerTargetReticle.SetBool("on", true);
+                        }
                     }
                     else if (objectPlayerTarget != x &&
                         Vector3.Distance(objectPlayer.transform.position, x.transform.position) < Vector3.Distance(objectPlayer.transform.position, objectPlayerTarget.transform.position))
@@ -92,13 +99,20 @@ public class Game_GameControl : MonoBehaviour
             // Check distance
             if (objectPlayerTarget.hitpointCurrent > 0 && Vector3.Distance(objectPlayer.transform.position, objectPlayerTarget.transform.position) < floatPlayerTargetRange)
             {
-                // TODO: Update target's stats to the interface and position target reticle.
+                // Set reticle onto the target
+                objectPlayerTargetReticle.transform.SetParent(objectPlayerTarget.transform);
+                objectPlayerTargetReticle.transform.localPosition = Vector3.zero;
+                objectPlayerTargetReticle.transform.localScale = Vector3.one;
             }
             else
             {
                 // Target becomes null if its too far from player or is no longer living.
                 objectPlayerTarget = null;
-                // TODO: Animate target reticle end animation
+                // Animate target reticle end animation
+                if (animatorPlayerTargetReticle != null)
+                {
+                    animatorPlayerTargetReticle.SetBool("on", false);
+                }
             }
         }
 
@@ -133,6 +147,12 @@ public class Game_GameControl : MonoBehaviour
                 break;
             case CameraState.FollowTarget:
                 if (objectCameraMainTarget != null) positionCameraMovePoint = objectCameraMainTarget.transform.position;
+                else return;
+                break;
+            case CameraState.FollowBetweenPlayerAndTarget:
+                if (objectPlayer != null && objectCameraMainTarget != null) positionCameraMovePoint = (objectPlayer.transform.position + objectCameraMainTarget.transform.position) / 2;
+                else if (objectPlayer != null) positionCameraMovePoint = objectPlayer.transform.position;
+                else if (objectCameraMainTarget != null) positionCameraMovePoint = objectCameraMainTarget.transform.position;
                 else return;
                 break;
         }

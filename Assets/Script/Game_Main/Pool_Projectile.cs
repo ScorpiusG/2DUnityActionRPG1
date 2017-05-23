@@ -29,18 +29,9 @@ public class Pool_Projectile : MonoBehaviour
 
     void Start ()
     {
-        if(pool == null)
-        {
-            // If this is the first pool, use it
-            pool = GetComponent<Pool_Projectile>();
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            // If a pool already exists, destroy this one
-            Destroy(gameObject);
-            return;
-        }
+        pool = this;
+        DontDestroyOnLoad(gameObject);
+        ResetPool();
     }
 
     private void FixedUpdate()
