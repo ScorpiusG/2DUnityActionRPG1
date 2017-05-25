@@ -78,11 +78,6 @@ public class Game_GameControl : MonoBehaviour
                     {
                         // If there was no target before, set this one as the target.
                         objectPlayerTarget = x;
-                        // Animate target reticle begin animation
-                        if (animatorPlayerTargetReticle != null)
-                        {
-                            animatorPlayerTargetReticle.SetBool("on", true);
-                        }
                     }
                     else if (objectPlayerTarget != x &&
                         Vector3.Distance(objectPlayer.transform.position, x.transform.position) < Vector3.Distance(objectPlayer.transform.position, objectPlayerTarget.transform.position))
@@ -103,6 +98,11 @@ public class Game_GameControl : MonoBehaviour
                 objectPlayerTargetReticle.transform.SetParent(objectPlayerTarget.transform);
                 objectPlayerTargetReticle.transform.localPosition = Vector3.zero;
                 objectPlayerTargetReticle.transform.localScale = Vector3.one;
+                // Animate target reticle begin animation
+                if (animatorPlayerTargetReticle != null)
+                {
+                    animatorPlayerTargetReticle.SetBool("on", true);
+                }
             }
             else
             {
