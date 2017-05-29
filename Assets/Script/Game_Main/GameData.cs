@@ -22,10 +22,7 @@ public class GameData : MonoBehaviour
     public int playerWeaponMeleeCurrent = 1;
     public List<int> playerWeaponRangeList;
     public int playerWeaponRangeCurrent = 0;
-    public bool playerFacingUp = false;
-    public bool playerFacingDown = true;
-    public bool playerFacingLeft = false;
-    public bool playerFacingRight = false;
+    public Vector2 playerFacing = Vector2.down;
 
     private void Awake()
     {

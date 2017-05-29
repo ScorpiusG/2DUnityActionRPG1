@@ -34,6 +34,7 @@ public class Game_GameControl : MonoBehaviour
     void Start()
     {
         control = this;
+        objectPlayerTargetReticle.SetActive(false);
 
         objectEnemyList = FindObjectsOfType<Game_EnemyCore>();
 
@@ -95,6 +96,7 @@ public class Game_GameControl : MonoBehaviour
             if (objectPlayerTarget.hitpointCurrent > 0 && Vector3.Distance(objectPlayer.transform.position, objectPlayerTarget.transform.position) < floatPlayerTargetRange)
             {
                 // Set reticle onto the target
+                if (!objectPlayerTargetReticle.activeSelf) objectPlayerTargetReticle.SetActive(true);
                 objectPlayerTargetReticle.transform.SetParent(objectPlayerTarget.transform);
                 objectPlayerTargetReticle.transform.localPosition = Vector3.zero;
                 objectPlayerTargetReticle.transform.localScale = Vector3.one;

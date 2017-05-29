@@ -71,10 +71,7 @@ public class Game_PlayerControl : MonoBehaviour
 
         AnimateSprite(moveDirection, moveDirection.magnitude > Mathf.Epsilon);
 
-        GameData.data.playerFacingUp = moveDirection.y > Mathf.Epsilon && Mathf.Abs(moveDirection.y) > Mathf.Abs(moveDirection.x);
-        GameData.data.playerFacingDown = moveDirection.y < -Mathf.Epsilon && Mathf.Abs(moveDirection.y) > Mathf.Abs(moveDirection.x);
-        GameData.data.playerFacingLeft = moveDirection.x < -Mathf.Epsilon && Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y);
-        GameData.data.playerFacingRight = moveDirection.x > Mathf.Epsilon && Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y);
+        GameData.data.playerFacing = moveDirection;
     }
 
     void AnimateSprite(Vector2 dir, bool isMoving = false)
@@ -84,8 +81,8 @@ public class Game_PlayerControl : MonoBehaviour
         dir.Normalize();
         if (!animatorUse8DirectionsInstead)
         {
-            mAnimator.SetBool("up", dir.y > Mathf.Epsilon && Mathf.Abs(dir.y) > Mathf.Abs(dir.x));
-            mAnimator.SetBool("down", dir.y < -Mathf.Epsilon && Mathf.Abs(dir.y) > Mathf.Abs(dir.x));
+            mAnimator.SetBool("up", dir.y > Mathf.Epsilon && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x));
+            mAnimator.SetBool("down", dir.y < -Mathf.Epsilon && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x));
             mAnimator.SetBool("left", dir.x < -Mathf.Epsilon && Mathf.Abs(dir.x) > Mathf.Abs(dir.y));
             mAnimator.SetBool("right", dir.x > Mathf.Epsilon && Mathf.Abs(dir.x) > Mathf.Abs(dir.y));
         }
@@ -96,8 +93,6 @@ public class Game_PlayerControl : MonoBehaviour
             mAnimator.SetBool("left", dir.x < -Mathf.Epsilon && Mathf.Abs(dir.y) < 0.6666f);
             mAnimator.SetBool("right", dir.x > Mathf.Epsilon && Mathf.Abs(dir.y) < 0.6666f);
         }
-
-        mAnimator.SetBool("move", isMoving);
     }
     public void SetAnimatorCharacterPlayerMoveDirectionBehavior(Vector3 behavior)
     {
