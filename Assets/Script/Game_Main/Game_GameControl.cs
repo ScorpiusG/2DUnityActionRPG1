@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game_GameControl : MonoBehaviour
 {
@@ -26,14 +27,18 @@ public class Game_GameControl : MonoBehaviour
     public Game_EnemyCore objectPlayerTarget = null;
     public GameObject objectPlayerTargetReticle;
     public Animator animatorPlayerTargetReticle;
-    private Game_EnemyCore[] objectEnemyList;
+    public Game_EnemyCore[] objectEnemyList;
     public float floatPlayerTargetRange = 3f;
     public int intTargetUpdateDelayFrames = 3;
     private int intTargetUpdateDelayFramesCurrent = 0;
 
-    void Start()
+    private void Awake()
     {
         control = this;
+    }
+
+    void Start()
+    {
         objectPlayerTargetReticle.SetActive(false);
 
         objectEnemyList = FindObjectsOfType<Game_EnemyCore>();
@@ -49,6 +54,8 @@ public class Game_GameControl : MonoBehaviour
             Destroy(gameObject);
         }
         */
+
+        objectPlayer.transform.position = cameraMain.transform.position = GameData.data.playerLocation;
     }
 
     void Update()
@@ -63,6 +70,11 @@ public class Game_GameControl : MonoBehaviour
 
         PlayerTargeting();
         EnergyGeneration();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SaveGame();
+        }
     }
 
     void PlayerTargeting()
@@ -97,9 +109,11 @@ public class Game_GameControl : MonoBehaviour
             {
                 // Set reticle onto the target
                 if (!objectPlayerTargetReticle.activeSelf) objectPlayerTargetReticle.SetActive(true);
-                objectPlayerTargetReticle.transform.SetParent(objectPlayerTarget.transform);
-                objectPlayerTargetReticle.transform.localPosition = Vector3.zero;
-                objectPlayerTargetReticle.transform.localScale = Vector3.one;
+                //objectPlayerTargetReticle.transform.SetParent(objectPlayerTarget.transform);
+                //objectPlayerTargetReticle.transform.localPosition = Vector3.zero;
+                //objectPlayerTargetReticle.transform.localScale = Vector3.one;
+                objectPlayerTargetReticle.transform.position = objectPlayerTarget.transform.position;
+
                 // Animate target reticle begin animation
                 if (animatorPlayerTargetReticle != null)
                 {
@@ -161,5 +175,12 @@ public class Game_GameControl : MonoBehaviour
 
         positionCameraMovePoint.z = -1f;
         cameraMain.transform.position = Vector3.Lerp(cameraMain.transform.position, positionCameraMovePoint, floatCameraLerpRate * Time.deltaTime);
+    }
+
+    void SaveGame()
+    {
+        GameData.data.playerLocation = new Vector2(objectPlayer.transform.position.x, objectPlayer.transform.position.y);
+        GameData.data.playerScene = SceneManager.GetActiveScene().name;
+        GameDataManager.Save(GameData.data.fileID, GameData.data);
     }
 }

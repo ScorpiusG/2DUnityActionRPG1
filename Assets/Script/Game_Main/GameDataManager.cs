@@ -11,7 +11,11 @@ public class GameDataManager
     /// <param name="data">The class of the game data what will be recorded.</param>
     public static void Save(string id, GameData data)
     {
-        PlayerPrefs.SetString("save-" + id, JsonUtility.ToJson(data));
+        string save = JsonUtility.ToJson(data);
+#if UNITY_EDITOR
+        Debug.Log("Saving JSON data: " + save);
+#endif
+        PlayerPrefs.SetString("save-" + id, save);
         PlayerPrefs.Save();
     }
 
@@ -24,10 +28,11 @@ public class GameDataManager
     {
         if (PlayerPrefs.HasKey("save-" + id))
         {
+            string save = PlayerPrefs.GetString("save-" + id);
 #if UNITY_EDITOR
-            Debug.Log("Loading JSON data: " + PlayerPrefs.GetString("save-" + id));
+            Debug.Log("Loading JSON data: " + save);
 #endif
-            JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString("save-" + id),GameData.data);
+            JsonUtility.FromJsonOverwrite(save, GameData.data);
             return true;
         }
         else

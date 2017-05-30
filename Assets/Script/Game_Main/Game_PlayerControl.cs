@@ -5,14 +5,37 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Game_PlayerControl : MonoBehaviour
 {
+    public static Game_PlayerControl control;
+
     public bool isControllable = true;
     public float movementSpeed = 0.5f;
+
+    public float attackMeleeCooldown = 0f;
+    public float attackMeleeCooldownCurrent = 0f;
+
+    public float attackComboTimerOnHit = 3f;
+    public float attackComboTimerDecreasing = 0.1f;
+    public float attackComboTimerCurrent = 0f;
+    public bool attackComboTimerDecreasingState = false;
+    public int attackCombo = 0;
 
     public Animator mAnimator;
     public bool animatorUse8DirectionsInstead = false;
 
     //private Rigidbody2D mRigidbody;
     private AudioSource mAudioSource;
+
+    public void AddCombo(int comboAmount = 1, float comboTimerMultiplier = 1f)
+    {
+        attackCombo += comboAmount;
+        attackComboTimerCurrent = attackComboTimerOnHit * comboTimerMultiplier;
+        attackComboTimerDecreasingState = false;
+    }
+
+    private void Awake()
+    {
+        control = this;
+    }
 
     void Start()
     {
@@ -22,6 +45,8 @@ public class Game_PlayerControl : MonoBehaviour
 
     void Update()
     {
+        ComboGauge();
+
         if (GameData.data.playerHealth <= 0)
         {
             return;
@@ -30,10 +55,35 @@ public class Game_PlayerControl : MonoBehaviour
         if (isControllable)
         {
             Movement();
+            MeleeWeaponUsage();
         }
         else
         {
-            mAnimator.SetBool("move", false);
+            mAnimator.SetBool("up", false);
+            mAnimator.SetBool("down", false);
+            mAnimator.SetBool("left", false);
+            mAnimator.SetBool("right", false);
+        }
+    }
+
+    void ComboGauge()
+    {
+        if (attackCombo > 0)
+        {
+            attackComboTimerCurrent -= Time.deltaTime;
+
+            if (attackComboTimerCurrent < 0f)
+            {
+                attackCombo--;
+                attackComboTimerCurrent = attackComboTimerDecreasing;
+                attackComboTimerDecreasingState = true;
+            }
+        }
+        else
+        {
+            attackCombo = 0;
+            attackComboTimerCurrent = 0f;
+            attackComboTimerDecreasingState = false;
         }
     }
 
@@ -71,7 +121,64 @@ public class Game_PlayerControl : MonoBehaviour
 
         AnimateSprite(moveDirection, moveDirection.magnitude > Mathf.Epsilon);
 
-        GameData.data.playerFacing = moveDirection;
+        if (moveDirection.magnitude > Mathf.Epsilon) GameData.data.playerFacing = moveDirection;
+    }
+
+    void MeleeWeaponUsage()
+    {
+        attackMeleeCooldown = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAttackCooldown;
+        attackMeleeCooldownCurrent -= Time.deltaTime;
+
+        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.J)) && attackMeleeCooldownCurrent <= 0f)
+        {
+            attackMeleeCooldownCurrent = attackMeleeCooldown;
+            Vector3 spawnPos = transform.position;
+            Quaternion spawnRot = Quaternion.Euler(Vector3.zero);
+            // Down
+            if (GameData.data.playerFacing.y < -Mathf.Epsilon)
+            {
+                spawnPos.y -= GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+                spawnRot = Quaternion.Euler(Vector3.forward * 180);
+            }
+            // Left
+            if (GameData.data.playerFacing.x < -Mathf.Epsilon)
+            {
+                spawnPos.x -= GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+                spawnRot = Quaternion.Euler(Vector3.forward * 90);
+            }
+            // Right
+            if (GameData.data.playerFacing.x > Mathf.Epsilon)
+            {
+                spawnPos.x += GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+                spawnRot = Quaternion.Euler(Vector3.forward * 270);
+            }
+            // Up
+            if (GameData.data.playerFacing.y > Mathf.Epsilon)
+            {
+                spawnPos.y += GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+                spawnRot = Quaternion.Euler(Vector3.zero);
+            }
+
+            Vector2 atkAoE = Vector2.zero;
+            // Horizontal AoE
+            if (Mathf.Abs(GameData.data.playerFacing.x) > Mathf.Abs(GameData.data.playerFacing.y - Mathf.Epsilon))
+            {
+                atkAoE.x = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+                atkAoE.y = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaWidth * 0.5f;
+            }
+            // Vertical AoE
+            else
+            {
+                atkAoE.x = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaWidth * 0.5f;
+                atkAoE.y = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatAreaRadius * 0.5f;
+            }
+
+            Game_PlayerAttackArea newAtk = Pool_PlayerAttackArea.pool.Spawn(spawnPos, spawnRot);
+            newAtk.attackPower = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].intAttackBase +
+                GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].intAttackPerUpgrade * GameData.data.playerWeaponMeleeListLevel[GameData.data.playerWeaponMeleeCurrent];
+            newAtk.attackAreaOfEffect = atkAoE;
+            newAtk.knockbackPower = GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].floatKnockbackDistance;
+        }
     }
 
     void AnimateSprite(Vector2 dir, bool isMoving = false)

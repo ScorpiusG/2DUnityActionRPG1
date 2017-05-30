@@ -56,9 +56,9 @@ public class ItemData
     public float floatAreaRadius = 0;
 
     /// <summary>
-    /// The item's AoE angle from where the user is facing (up to 360, in degrees).
+    /// The item's AoE width. The center is the AoE's pivot for this.
     /// </summary>
-    public float floatAreaAngleArc = 0;
+    public float floatAreaWidth = 0;
 
     /// <summary>
     /// The item affects the position change of the user/target.

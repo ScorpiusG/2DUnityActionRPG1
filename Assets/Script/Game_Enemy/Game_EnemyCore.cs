@@ -9,6 +9,9 @@ public class Game_EnemyCore : MonoBehaviour
     public int hitpointInitial = -1;
     public int hitpointMaximum = 1000;
     [HideInInspector] public int hitpointCurrent = 0;
+    public Vector2 hitboxDamage = new Vector2(0.5f, 0.5f);
+    public bool cannotTakeDamage = false;
+    public bool cannotBeDestroyed = false;
 
     public bool knockbackOnDamageEnable = true;
 
@@ -33,11 +36,24 @@ public class Game_EnemyCore : MonoBehaviour
     /// <param name="knockback">Repositioning of enemy using this Vector3.</param>
     public void TakeDamage(int damage, Vector3 knockback)
     {
-        hitpointCurrent -= damage;
+        if (cannotTakeDamage) return;
+
+        int totalDamage = damage + Mathf.FloorToInt(Game_PlayerControl.control.attackCombo * damage / 80);
+        totalDamage = Mathf.Clamp(totalDamage, damage, damage * 2);
+
+        hitpointCurrent -= totalDamage;
+        Game_PlayerControl.control.AddCombo();
 
         if (hitpointCurrent <= 0)
         {
-            gameObject.SetActive(false);
+            if (cannotBeDestroyed)
+            {
+                hitpointCurrent = 1;
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
         if (knockbackOnDamageEnable)
         {

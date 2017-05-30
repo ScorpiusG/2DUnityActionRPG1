@@ -19,8 +19,10 @@ public class GameData : MonoBehaviour
     public float playerInvincibility = 0f;
     public List<int> playerSkills;
     public List<int> playerWeaponMeleeList;
+    public List<int> playerWeaponMeleeListLevel;
     public int playerWeaponMeleeCurrent = 1;
     public List<int> playerWeaponRangeList;
+    public List<int> playerWeaponRangeListLevel;
     public int playerWeaponRangeCurrent = 0;
     public Vector2 playerFacing = Vector2.down;
 
@@ -56,13 +58,18 @@ public class GameData : MonoBehaviour
         playerHealth = 1;
         playerSkills = new List<int>();
         playerWeaponMeleeList = new List<int>();
+        playerWeaponMeleeListLevel = new List<int>();
         playerWeaponRangeList = new List<int>();
+        playerWeaponRangeListLevel = new List<int>();
         playerWeaponMeleeCurrent = 1;
         playerWeaponRangeCurrent = 0;
 
         playerSkills.Add(10);
         playerWeaponMeleeList.Add(0);
+        playerWeaponMeleeListLevel.Add(0);
         playerWeaponMeleeList.Add(1);
+        playerWeaponMeleeListLevel.Add(0);
         playerWeaponRangeList.Add(0);
+        playerWeaponRangeListLevel.Add(0);
     }
 }

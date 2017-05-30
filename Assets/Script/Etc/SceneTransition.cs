@@ -37,6 +37,6 @@ public class SceneTransition : MonoBehaviour
 
     public void ChangeSceneNow()
     {
-        SceneManager.LoadScene(transition.stringSceneName);
+        SceneManager.LoadScene(stringSceneName);
     }
 }
