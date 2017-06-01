@@ -8,6 +8,8 @@ public class Game_PlayerAttackArea : MonoBehaviour
     public Vector2 attackAreaOfEffect = Vector2.zero;
     public float knockbackPower = 0;
     public List<string> listStringOther = new List<string>();
+    public float lifeSpan = 0.1f;
+    public SpriteRenderer spriteRendererBase;
 
     public GameObject[] spriteHitAreaDebug;
     private const bool showHitAreaDebug = true;
@@ -33,6 +35,7 @@ public class Game_PlayerAttackArea : MonoBehaviour
         }
 #else
         foreach (GameObject x in spriteHitAreaDebug) if (x != null) Destroy(x);
+        spriteHitAreaDebug = null;
 #endif
         yield return null;
         foreach (Game_EnemyCore x in Game_GameControl.control.objectEnemyList)
@@ -46,17 +49,19 @@ public class Game_PlayerAttackArea : MonoBehaviour
             }
         }
 
+        yield return new WaitForSeconds(lifeSpan);
+
         foreach (GameObject x in spriteHitAreaDebug) x.SetActive(false);
         gameObject.SetActive(false);
     }
 
     private void Start()
     {
-        StartCoroutine("HitEnemy");
+        //StartCoroutine(HitEnemy());
     }
     private void OnEnable()
     {
-        StartCoroutine("HitEnemy");
+        StartCoroutine(HitEnemy());
     }
 
     /*
