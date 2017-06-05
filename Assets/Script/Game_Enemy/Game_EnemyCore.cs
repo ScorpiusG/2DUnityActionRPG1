@@ -12,6 +12,7 @@ public class Game_EnemyCore : MonoBehaviour
     public Vector2 hitboxDamage = new Vector2(0.5f, 0.5f);
     public bool cannotTakeDamage = false;
     public bool cannotBeDestroyed = false;
+    public Vector3 positionMoveTo = Vector3.zero;
 
     public bool knockbackOnDamageEnable = true;
 
@@ -58,6 +59,7 @@ public class Game_EnemyCore : MonoBehaviour
         if (knockbackOnDamageEnable)
         {
             transform.position += knockback;
+            positionMoveTo += knockback;
         }
     }
 }

@@ -15,7 +15,7 @@ public class Pool_PlayerAttackArea : MonoBehaviour
     void Start()
     {
         pool = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         ResetPool();
     }
 

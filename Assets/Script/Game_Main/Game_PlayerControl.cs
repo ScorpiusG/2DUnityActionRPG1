@@ -23,6 +23,7 @@ public class Game_PlayerControl : MonoBehaviour
     public bool animatorUse8DirectionsInstead = false;
 
     //private Rigidbody2D mRigidbody;
+    private bool isStartAnimationFinished = false;
     private AudioSource mAudioSource;
 
     public void AddCombo(int comboAmount = 1, float comboTimerMultiplier = 1f)
@@ -41,6 +42,19 @@ public class Game_PlayerControl : MonoBehaviour
     {
         //mRigidbody = GetComponent<Rigidbody2D>();
         mAudioSource = GetComponent<AudioSource>();
+
+        StartCoroutine(SceneStartAnimation());
+    }
+
+    IEnumerator SceneStartAnimation()
+    {
+        isControllable = false;
+        AnimateSprite(GameData.data.playerFacing);
+
+        yield return new WaitForSeconds(0.5f);
+
+        isControllable = true;
+        isStartAnimationFinished = true;
     }
 
     void Update()
@@ -57,7 +71,7 @@ public class Game_PlayerControl : MonoBehaviour
             Movement();
             MeleeWeaponUsage();
         }
-        else
+        else if (isStartAnimationFinished)
         {
             mAnimator.SetBool("up", false);
             mAnimator.SetBool("down", false);
@@ -119,7 +133,7 @@ public class Game_PlayerControl : MonoBehaviour
         //mRigidbody.MovePosition((currentPosition + moveDirection) * moveSpeed);
         transform.position += new Vector3(moveDirection.x, moveDirection.y) * moveSpeed;
 
-        AnimateSprite(moveDirection, moveDirection.magnitude > Mathf.Epsilon);
+        AnimateSprite(moveDirection);
 
         if (moveDirection.magnitude > Mathf.Epsilon) GameData.data.playerFacing = moveDirection;
     }
@@ -181,7 +195,7 @@ public class Game_PlayerControl : MonoBehaviour
         }
     }
 
-    void AnimateSprite(Vector2 dir, bool isMoving = false)
+    void AnimateSprite(Vector2 dir)
     {
         if (mAnimator == null) return;
 

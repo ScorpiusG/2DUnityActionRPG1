@@ -30,7 +30,7 @@ public class Pool_Projectile : MonoBehaviour
     void Start ()
     {
         pool = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         ResetPool();
     }
 
