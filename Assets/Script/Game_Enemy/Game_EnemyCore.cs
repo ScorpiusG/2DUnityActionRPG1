@@ -53,6 +53,7 @@ public class Game_EnemyCore : MonoBehaviour
             }
             else
             {
+                hitpointCurrent = 0;
                 gameObject.SetActive(false);
             }
         }
