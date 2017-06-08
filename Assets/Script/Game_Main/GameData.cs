@@ -26,6 +26,8 @@ public class GameData : MonoBehaviour
     public int playerWeaponRangeCurrent = 0;
     public Vector2 playerFacing = Vector2.down;
 
+    public List<string> eventsTriggered;
+
     private void Awake()
     {
         if (data == null)
@@ -63,6 +65,7 @@ public class GameData : MonoBehaviour
         playerWeaponRangeListLevel = new List<int>();
         playerWeaponMeleeCurrent = 1;
         playerWeaponRangeCurrent = 0;
+        eventsTriggered = new List<string>();
 
         playerSkills.Add(10);
         playerWeaponMeleeList.Add(0);

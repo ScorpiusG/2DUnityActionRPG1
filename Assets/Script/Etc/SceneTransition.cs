@@ -24,6 +24,8 @@ public class SceneTransition : MonoBehaviour
 
     public static void GoToScene(string sceneName)
     {
+        GameDataManager.Save("auto", GameData.data);
+
         if (transition.mAnimator != null)
         {
             transition.stringSceneName = sceneName;
