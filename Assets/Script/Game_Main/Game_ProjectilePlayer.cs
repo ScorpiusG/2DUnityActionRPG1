@@ -2,10 +2,14 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Animator))]
-public class Game_Projectile : MonoBehaviour
+public class Game_ProjectilePlayer : MonoBehaviour
 {
     public float movementSpeed = 2f;
-    public Vector2 boundaryDespawn = new Vector2(10f, 10f);
+    public float distanceFromPlayerDespawn = 15f;
+
+    public int projectileDamage = 1;
+    public float lifeSpan = -1f;
+    public bool disallowDespawnOnContact = false;
 
     public string animatorLoopClipName = "loop";
     Animator anim;
@@ -14,9 +18,17 @@ public class Game_Projectile : MonoBehaviour
     {
         transform.position += transform.up * movementSpeed * Time.deltaTime;
 
-        if(Mathf.Abs(transform.position.x) > boundaryDespawn.x || Mathf.Abs(transform.position.y) > boundaryDespawn.y || transform.position.y < -0.5f)
+        if (Vector3.Distance(transform.position, Game_PlayerControl.control.transform.position) > distanceFromPlayerDespawn)
         {
             Despawn();
+        }
+        if (lifeSpan > 0f)
+        {
+            lifeSpan -= Time.deltaTime;
+            if (lifeSpan <= 0f)
+            {
+                Despawn();
+            }
         }
     }
 

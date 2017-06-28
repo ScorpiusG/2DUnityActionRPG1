@@ -10,6 +10,9 @@ public class Game_PlayerControl : MonoBehaviour
     public bool isControllable = true;
     public float movementSpeed = 0.5f;
 
+    public float damageInvulnerabilityPeriod = 2.0f;
+    public float damageInvulnerabilityPeriodCurrent = 0f;
+
     public float attackMeleeCooldown = 0f;
     public float attackMeleeCooldownCurrent = 0f;
 
@@ -61,13 +64,14 @@ public class Game_PlayerControl : MonoBehaviour
     {
         ComboGauge();
 
-        if (GameData.data.playerHealth <= 0)
+        if (GameData.data.playerHealthCurrent <= 0)
         {
             return;
         }
 
         if (isControllable)
         {
+            damageInvulnerabilityPeriodCurrent -= Time.deltaTime;
             Movement();
             MeleeWeaponUsage();
         }
@@ -77,6 +81,32 @@ public class Game_PlayerControl : MonoBehaviour
             mAnimator.SetBool("down", false);
             mAnimator.SetBool("left", false);
             mAnimator.SetBool("right", false);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        damageInvulnerabilityPeriodCurrent = damageInvulnerabilityPeriod;
+        if (GameData.data.playerHealthCurrent > 1)
+        {
+            switch (GameData.data.fileDifficulty)
+            {
+                // Default value
+                default: GameData.data.playerHealthCurrent -= damage; break;
+                // Easy - Always remove 1 point
+                case 0: GameData.data.playerHealthCurrent -= 1; break;
+                // Hard - Remove double the points
+                case 2: GameData.data.playerHealthCurrent -= damage * 2; break;
+            }
+
+            if (GameData.data.playerHealthCurrent < 1)
+            {
+                GameData.data.playerHealthCurrent = 1;
+            }
+        }
+        else
+        {
+
         }
     }
 

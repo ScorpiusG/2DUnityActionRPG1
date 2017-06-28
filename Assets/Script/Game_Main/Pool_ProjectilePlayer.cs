@@ -16,13 +16,13 @@ using System.Collections.Generic;
  * ResetPool() to clear list, usually done at a scene's end or a new scene's start.
  */
 
-public class Pool_Projectile : MonoBehaviour
+public class Pool_ProjectilePlayer : MonoBehaviour
 {
-    public static Pool_Projectile pool;
+    public static Pool_ProjectilePlayer pool;
     public bool disableSpawnLimit = false;
 
-    public Game_Projectile prefabBullet;
-    List<Game_Projectile> listBullet = new List<Game_Projectile>();
+    public Game_ProjectilePlayer prefabBullet;
+    List<Game_ProjectilePlayer> listBullet = new List<Game_ProjectilePlayer>();
 
     public static int bulletQuantity = 0;
     public int bulletQuantityMax = 1000;
@@ -37,7 +37,7 @@ public class Pool_Projectile : MonoBehaviour
     private void FixedUpdate()
     {
         bulletQuantity = 0;
-        foreach (Game_Projectile x in listBullet)
+        foreach (Game_ProjectilePlayer x in listBullet)
         {
             if (x.gameObject.activeInHierarchy) bulletQuantity++;
             if (!disableSpawnLimit && bulletQuantity >= bulletQuantityMax) break;
@@ -51,12 +51,12 @@ public class Pool_Projectile : MonoBehaviour
     /// <param name="rotation">Rotation of the bullet in degrees - where 0 is up, 90 is left, and 180 is down.</param>
     /// <param name="position">Spawn position of the bullet.</param>
     /// <returns></returns>
-    public Game_Projectile SpawnBullet(float speed, float rotation, Vector3 position)
+    public Game_ProjectilePlayer SpawnBullet(float speed, float rotation, Vector3 position)
     {
         if (!disableSpawnLimit && bulletQuantity >= bulletQuantityMax) return null;
 
         // Try to get any inactive bullet in the list
-        foreach (Game_Projectile x in listBullet)
+        foreach (Game_ProjectilePlayer x in listBullet)
         {
             if(!x.gameObject.activeInHierarchy)
             {
@@ -70,7 +70,7 @@ public class Pool_Projectile : MonoBehaviour
         }
 
         // If no inactive bullet was returned, create a new one
-        Game_Projectile newBullet = Instantiate(prefabBullet);
+        Game_ProjectilePlayer newBullet = Instantiate(prefabBullet);
         newBullet.movementSpeed = speed;
         newBullet.transform.position = position;
         newBullet.transform.rotation = Quaternion.Euler(0f, 0f, rotation);
@@ -87,7 +87,7 @@ public class Pool_Projectile : MonoBehaviour
     /// <param name="position">Spawn position of the bullet.</param>
     /// <param name="target">A destination in which the bullet will travel to. Note that the rotation parameter will be added on top of this.</param>
     /// <returns></returns>
-    public Game_Projectile SpawnBullet(float speed, float rotation, Vector3 position, Vector3 target)
+    public Game_ProjectilePlayer SpawnBullet(float speed, float rotation, Vector3 position, Vector3 target)
     {
         Vector3 dir = (target - position).normalized;
         rotation += (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) - 90f;

@@ -37,7 +37,10 @@ public class Game_EnemyCore : MonoBehaviour
     /// <param name="knockback">Repositioning of enemy using this Vector3.</param>
     public void TakeDamage(int damage, Vector3 knockback)
     {
-        if (cannotTakeDamage) return;
+        if (cannotTakeDamage || GameData.data.playerHealthCurrent <= 0)
+        {
+            return;
+        }
 
         int totalDamage = damage + Mathf.FloorToInt(Game_PlayerControl.control.attackCombo * damage / 80);
         totalDamage = Mathf.Clamp(totalDamage, damage, damage * 2);

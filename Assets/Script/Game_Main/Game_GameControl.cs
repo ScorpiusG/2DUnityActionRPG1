@@ -63,7 +63,7 @@ public class Game_GameControl : MonoBehaviour
         CameraMovement();
 
         // Anything below this will not run if player is "dead".
-        if (GameData.data.playerHealth <= 0)
+        if (GameData.data.playerHealthCurrent <= 0)
         {
             return;
         }

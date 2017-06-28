@@ -14,7 +14,8 @@ public class GameData : MonoBehaviour
 
     public string playerScene = "";
     public Vector2 playerLocation = Vector2.zero;
-    public int playerHealth = 1;
+    public int playerHealthCurrent = 1;
+    public int playerHealthMaximum = 1;
     public float playerEnergy = 100;
     public float playerInvincibility = 0f;
     public List<int> playerSkills;
@@ -57,7 +58,8 @@ public class GameData : MonoBehaviour
 
         playerScene = "";
         playerLocation = Vector2.zero;
-        playerHealth = 1;
+        playerHealthCurrent = 1;
+        playerHealthMaximum = 1;
         playerSkills = new List<int>();
         playerWeaponMeleeList = new List<int>();
         playerWeaponMeleeListLevel = new List<int>();

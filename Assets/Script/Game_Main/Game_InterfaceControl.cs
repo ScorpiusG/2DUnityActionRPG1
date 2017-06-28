@@ -52,10 +52,10 @@ public class Game_InterfaceControl : MonoBehaviour
     private void Update()
     {
         // Player info
-        if (GameData.data.playerHealth > 0)
+        if (GameData.data.playerHealthCurrent > 0)
         {
             if (!groupPlayer.activeSelf) groupPlayer.SetActive(true);
-            textPlayerHealth.text = stringPlayerHealthPrefix + GameData.data.playerHealth.ToString() + stringPlayerHealthSuffix;
+            textPlayerHealth.text = stringPlayerHealthPrefix + GameData.data.playerHealthCurrent.ToString() + stringPlayerHealthSuffix;
             textEnergyValue.text = stringEnergyValuePrefix + GameData.data.playerEnergy.ToString("f0") + stringEnergyValueSuffix;
             imageEnergyGauge.fillAmount = GameData.data.playerEnergy / 100f;
         }
@@ -115,7 +115,7 @@ public class Game_InterfaceControl : MonoBehaviour
             textDebug.text =
                 "### DEBUG ###\n" +
                 "\n" +
-                "HEALTH = " + GameData.data.playerHealth.ToString() + "\n" +
+                "HEALTH = " + GameData.data.playerHealthCurrent.ToString() + " (MAX " + GameData.data.playerHealthMaximum.ToString() + ")\n" +
                 "ENERGY = " + GameData.data.playerEnergy.ToString() + "\n" +
                 "WPN MELEE CURRENT = " + GameInfo.info.itemListWeaponMelee.listItemData[GameData.data.playerWeaponMeleeCurrent].stringName + " (ID " + GameData.data.playerWeaponMeleeCurrent.ToString() + ")\n" +
                 "WPN RANGE CURRENT = " + GameInfo.info.itemListWeaponRange.listItemData[GameData.data.playerWeaponRangeCurrent].stringName + " (ID " + GameData.data.playerWeaponRangeCurrent.ToString() + ")\n" +
